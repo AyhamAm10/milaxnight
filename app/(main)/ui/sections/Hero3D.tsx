@@ -247,7 +247,7 @@ export function Hero3D({ onLoad, onProgress }: { onLoad?: (loaded: boolean) => v
       initial={{ opacity: 0, x: 100, rotateY: -0.5 }}
       animate={{ opacity: 1, x: 0, rotateY: 0 }}
       transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-      className="relative w-full h-[600px] flex items-center justify-center"
+      className="relative w-full h-full min-h-[400px] md:min-h-[500px] lg:h-[600px] flex items-center justify-center"
     >
       {/* Radial glow behind model - only visible in dark mode, subtle in light mode */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -257,10 +257,10 @@ export function Hero3D({ onLoad, onProgress }: { onLoad?: (loaded: boolean) => v
       <Canvas
         camera={{ position: [0, 0, 6], fov: 45 }} // Increased distance and reduced FOV for better framing
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        className="relative"
+        className="relative w-full h-full"
         style={{ 
           width: '100%', 
-          height: '600px', 
+          height: '100%', 
           background: 'transparent', 
           zIndex: 5, 
           border: 'none', 
