@@ -1,15 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { useMirror } from '../../store';
 
 export function GlobalPreloader() {
+  const pathname = usePathname();
   const isHeroReady = useMirror('isHeroReady');
   const heroProgress = useMirror('heroProgress');
   const [isVisible, setIsVisible] = useState(true);
   const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  // Check if we're on the main page (has Hero) or another page (like login)
+  const isMainPage = pathname === '/' || pathname === '/(main)';
 
   // Check if fonts are loaded
   useEffect(() => {
@@ -26,16 +31,28 @@ export function GlobalPreloader() {
     }
   }, []);
 
-  // Hide preloader when Hero is ready and fonts are loaded
+  // Hide preloader logic:
+  // - On main page: wait for Hero to be ready + fonts loaded
+  // - On other pages: just wait for fonts loaded (no Hero)
   useEffect(() => {
-    if (isHeroReady && fontsLoaded) {
-      // Small delay for smooth transition
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-      }, 300);
-      return () => clearTimeout(timer);
+    if (isMainPage) {
+      // Main page: wait for Hero to be ready
+      if (isHeroReady && fontsLoaded) {
+        const timer = setTimeout(() => {
+          setIsVisible(false);
+        }, 300);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      // Other pages (like login): just wait for fonts
+      if (fontsLoaded) {
+        const timer = setTimeout(() => {
+          setIsVisible(false);
+        }, 300);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [isHeroReady, fontsLoaded]);
+  }, [isHeroReady, fontsLoaded, isMainPage]);
 
   if (!isVisible) return null;
 
